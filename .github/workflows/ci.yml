@@ -1,0 +1,48 @@
+name: Quality gate
+on:
+  push:
+    branches: [development]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: circa
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres@localhost:5432/circa
+      DIRECT_URL: postgresql://postgres@localhost:5432/circa
+      NEXT_PUBLIC_DEMO_MODE: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run db:verify
+      - run: npm run build
+      - name: HTTP persistence and isolation checks
+        run: |
+          npm run start > /tmp/circa-server.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://localhost:3000/api/health; then break; fi
+            sleep 1
+          done
+          node --import tsx scripts/smoke.ts

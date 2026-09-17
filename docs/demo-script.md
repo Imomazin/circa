@@ -1,0 +1,17 @@
+# Circa demonstration script
+
+Target: seven minutes. Use a laptop viewport of 1366 × 768 or larger. Open `/`, choose **Open demonstration**, then `/demo`. All names and figures are fictional. Reset before rehearsing if the workspace already contains edits.
+
+| Time      | Navigation and click                                                                    | Presenter words                                                                                                                                      | Viewer should notice                                     |
+| --------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| 0:00–0:45 | `/overview`; review the top metrics and register                                        | “Circa helps a business assess whether a circular opportunity makes commercial sense. This portfolio contains twelve synthetic Scottish businesses.” | Financial opportunity and evidence are visible together  |
+| 0:45–1:30 | Assessments; search Caledon; open its name                                              | “Caledon is considering refurbishment and take-back. We can inspect the operating model, customer evidence and current cost structure.”              | A coherent business case with explicit inputs            |
+| 1:30–3:00 | Financial scenarios; change material expenditure reduction from 20 to 35; Save scenario | “This assumption changes contribution, payback and the commercial score. Saving records the scenario in the database.”                               | Immediate recalculation followed by persisted revision   |
+| 3:00–4:00 | Click Commercial viability; inspect weights; close dialog                               | “The score is a prototype rule set. Here are its components, evidence gaps and suggested validation actions.”                                        | Explanation and uncertainty are inspectable              |
+| 4:00–5:00 | Resilience; then Investor readiness                                                     | “Supplier concentration remains a concern. The investment case still needs independent evidence and validated costs.”                                | Circular potential does not remove commercial risk       |
+| 5:00–6:00 | Investment case; compare scenarios; Print investment case                               | “The saved assumptions carry through to the case. We can compare the base, upside and downside before discussing funding.”                           | Saved figures appear consistently and print cleanly      |
+| 6:00–7:00 | Programme insight; filter Furniture; then clear                                         | “Aggregated patterns help a programme team target business support. The next stage is co-design and validation using real, governed evidence.”       | Actionable programme patterns without individual records |
+
+Alternative stories: Forth Equipment Services tests recurring revenue and higher capital needs. North Coast Textiles illustrates circular potential with weak demand evidence and volatile inputs.
+
+Do not claim validated investor scores, sponsor endorsement, proven investment outcomes, production privacy certification, live external data or autonomous AI judgement. `/governance` shows the actual audit history and integration status.
