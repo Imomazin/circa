@@ -1,0 +1,51 @@
+{
+  "name": "circa-civtech",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:smoke": "node --import tsx scripts/smoke.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node --import tsx scripts/migrate.ts",
+    "db:seed": "node --import tsx scripts/seed.ts",
+    "db:verify": "node --import tsx scripts/verify.ts",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@vercel/functions": "3.9.8",
+    "dotenv": "17.4.2",
+    "drizzle-orm": "0.45.2",
+    "lucide-react": "1.47.0",
+    "next": "16.3.5",
+    "pg": "8.23.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "recharts": "3.10.1",
+    "server-only": "0.0.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/compat": "2.1.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "22.20.3",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "drizzle-kit": "0.31.10",
+    "eslint": "10.10.0",
+    "eslint-config-next": "16.3.5",
+    "prettier": "3.9.7",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.13",
+    "typescript": "6.0.3",
+    "vitest": "5.0.1"
+  }
+}
