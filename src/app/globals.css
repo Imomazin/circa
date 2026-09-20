@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f6f5f2;
+  --foreground: #14181c;
+  --card: #ffffff;
+  --card-foreground: #14181c;
+  --surface: #efede9;
+  --muted: #eeece8;
+  --muted-foreground: #6f6b65;
+  --border: #dcd8d1;
+  --input: #dcd8d1;
+  --ring: #26705d;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #101418;
+    --foreground: #eceae6;
+    --card: #181d22;
+    --card-foreground: #eceae6;
+    --surface: #14191e;
+    --muted: #1f252b;
+    --muted-foreground: #a4abb2;
+    --border: #2a3138;
+    --input: #2a3138;
+    --ring: #3f8d78;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #101418;
+  --foreground: #eceae6;
+  --card: #181d22;
+  --card-foreground: #eceae6;
+  --surface: #14191e;
+  --muted: #1f252b;
+  --muted-foreground: #a4abb2;
+  --border: #2a3138;
+  --input: #2a3138;
+  --ring: #3f8d78;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Print styles for the investment case. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-full {
+    grid-template-columns: 1fr !important;
+  }
+  body {
+    background: #ffffff;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/* Thin scrollbars for the app shell. */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 3px;
+}
