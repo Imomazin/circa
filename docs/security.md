@@ -25,6 +25,13 @@ The GitHub repository is **public**. Every committed file is treated as external
 - **No `dangerouslySetInnerHTML`** and no rendering of untrusted HTML; all displayed data is synthetic and typed.
 - **`robots: noindex`** on the demonstrator to avoid indexing of a prototype.
 
+## Dependency security
+
+- Dependencies are pinned and `npm audit --omit=dev` is run as part of the pre-deployment check.
+- **Next.js** is held at a patched **15.5.25** (addresses CVE-2025-66478).
+- **drizzle-orm** is at **0.45.2** (addresses the SQL-identifier-escaping advisory GHSA-gpj5-g38j-94v9); **sharp** is patched.
+- **Residual, accepted:** Next.js bundles its own copy of `postcss` which carries source-map advisories that only clear by upgrading to the Next 16 major. These are **build-time** issues that require attacker-controlled CSS; Circa authors all of its own stylesheets, so they are not exploitable in this application. A Next 16 upgrade is deferred to avoid a risky major bump mid-demonstrator and is tracked in `docs/known-limitations.md`.
+
 ## Reporting
 
 This is a demonstrator, not a production system. Do not store real or sensitive data in it. If a secret is ever committed by mistake, rotate the credential immediately in Neon and Vercel and purge it from history before the branch is shared further.

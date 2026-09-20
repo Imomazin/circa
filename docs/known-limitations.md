@@ -31,6 +31,7 @@ Circa is a **product demonstrator**. This document is an honest inventory of wha
 
 - The demonstrator is `noindex` and not hardened for production traffic.
 - The demo-data reset is intentionally destructive (guarded by a typed confirmation) and restores the deterministic seed.
+- **Dependency debt:** Next.js is on a patched 15.5.x; a later upgrade to the Next 16 major is deferred (it would clear the build-time bundled-`postcss` source-map advisories noted in `docs/security.md`, which are not exploitable here).
 
 ## What a 15-week Accelerator would address
 
