@@ -219,6 +219,47 @@ export function RadarScores({
   );
 }
 
+/** Radar overlaying several named series on the same axes — for comparison. */
+export function MultiRadar({
+  axes,
+  series,
+  height = 320,
+}: {
+  axes: string[];
+  series: { name: string; values: number[] }[];
+  height?: number;
+}) {
+  const data = axes.map((axis, i) => {
+    const row: Record<string, number | string> = { axis };
+    for (const s of series) row[s.name] = s.values[i] ?? 0;
+    return row;
+  });
+  return (
+    <div className="text-charcoal-400 dark:text-charcoal-300" style={{ width: "100%", height }}>
+      <ResponsiveContainer>
+        <RadarChart data={data} outerRadius="70%">
+          <PolarGrid stroke="currentColor" strokeOpacity={0.2} />
+          <PolarAngleAxis dataKey="axis" tick={{ fontSize: 10, fill: "currentColor" }} />
+          <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 9, fill: "currentColor" }} angle={90} />
+          {series.map((s, i) => (
+            <Radar
+              key={s.name}
+              name={s.name}
+              dataKey={s.name}
+              stroke={CATEGORICAL[i % CATEGORICAL.length]}
+              fill={CATEGORICAL[i % CATEGORICAL.length]}
+              fillOpacity={0.12}
+              strokeWidth={2}
+            />
+          ))}
+          <Legend wrapperStyle={{ fontSize: 11 }} />
+          <Tooltip content={<CircaTooltip />} />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 export interface ScatterPoint {
   x: number;
   y: number;

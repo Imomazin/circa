@@ -2,12 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Pencil } from "lucide-react";
-import { PageHeader, DisclaimerBanner, DetailRow } from "@/components/primitives";
+import { PageHeader, DisclaimerBanner, DetailRow, SectionTitle } from "@/components/primitives";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScoreStrip, DimensionCard } from "@/components/dimension-card";
 import { RecalcButton } from "@/components/recalc-button";
+import { EvidenceManager } from "@/components/assessment/evidence-manager";
 import { getBusinessDetail } from "@/server/queries";
 import { formatDate } from "@/lib/format";
 
@@ -23,7 +24,7 @@ export default async function AssessmentViewPage({ params }: { params: Promise<{
   const { id } = await params;
   const detail = await getBusinessDetail(id);
   if (!detail) notFound();
-  const { org, assessment, bundle, score } = detail;
+  const { org, assessment, bundle, score, evidence } = detail;
 
   return (
     <div>
@@ -79,6 +80,15 @@ export default async function AssessmentViewPage({ params }: { params: Promise<{
         <DimensionCard dim={bundle.investor} />
         <DimensionCard dim={bundle.opportunity} />
         <DimensionCard dim={bundle.evidence} />
+      </div>
+
+      <div className="mt-6">
+        <SectionTitle hint="Add or remove items — scores update on recalculation">Evidence base</SectionTitle>
+        <Card>
+          <CardContent className="p-0">
+            <EvidenceManager assessmentId={assessment.id} items={evidence} />
+          </CardContent>
+        </Card>
       </div>
 
       <div className="mt-6">

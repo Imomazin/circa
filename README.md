@@ -23,8 +23,10 @@ See [`docs/civtech-alignment.md`](docs/civtech-alignment.md) for a requirement-b
 ## What it does
 
 - **Executive dashboard** — portfolio-level commercial intelligence: viability by sector, capital by circular model, a viability-vs-evidence scatter that flags where to validate, distributions and an opportunity pipeline, all filterable.
-- **Business directory & profiles** — searchable, sortable synthetic Scottish businesses with full commercial profiles, resource dependencies and supplier risks.
-- **Assessment workflow** — a multi-step assessment that recomputes scores live as you edit, and persists inputs and recalculated scores.
+- **Business directory & profiles** — searchable, sortable synthetic Scottish businesses with full commercial profiles, resource dependencies and supplier risks, plus one-click **portfolio CSV export**.
+- **Add a business** — a guided multi-step wizard (profile → circular opportunity → financial baseline → circular case → commercial signals) that derives the five scores, four financial scenarios and recommendation set from the same engine, with live scoring as you type — no faked data.
+- **Compare** — put up to three businesses side by side across the five dimensions (radar overlay + per-dimension meters) and their capital and opportunity figures.
+- **Assessment workflow** — a multi-step assessment that recomputes scores live as you edit, persists inputs and recalculated scores, and lets you **add or remove evidence items** that feed Evidence Confidence.
 - **Commercial scoring engine** — five transparent, deterministic dimensions: Commercial Viability, Commercial Resilience, Investor Readiness, Circular Opportunity and Evidence Confidence, each explained down to weighted components and drivers.
 - **Financial scenario modeller** — baseline / circular base / upside / downside cases with editable assumptions, live recalculation, persistence, and single-variable sensitivity analysis.
 - **Investor readiness & investment case** — a readiness profile and a print-friendly investment case.

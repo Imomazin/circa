@@ -23,9 +23,9 @@ Circa is a **product demonstrator**. This document is an honest inventory of wha
 
 - **No authentication or role-based access control (RBAC).** The data model includes a users concept and the architecture is designed to add roles, but they are not enabled.
 - **No multi-tenant separation.** All users of the demonstrator share one dataset.
-- **Assessment editing** persists inputs and recalculated scores for existing businesses; **creating a brand-new business** from scratch in the UI is out of scope for the demonstrator.
+- **Assessment editing** persists inputs and recalculated scores for existing businesses, and a guided wizard creates a brand-new business from scratch (deriving scores, scenarios and recommendations from the engine). Both act on the shared demonstrator dataset; there is no per-user draft isolation.
 - **PDF** is produced via reliable browser printing of the investment case, not a bespoke server-side PDF pipeline.
-- **Evidence items** are displayed and drive Evidence Confidence, but there is no upload/verification workflow.
+- **Evidence items** can be added and removed in the UI and drive Evidence Confidence, but there is no document **upload** or independent **verification** workflow — status is set manually and taken on trust.
 
 ## Operational
 

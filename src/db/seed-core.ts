@@ -3,7 +3,8 @@ import * as schema from "./schema";
 import { BUSINESSES, PROGRAMME_INSIGHTS, type BusinessSpec } from "./seed-data";
 import { computeScores, headlineScore } from "../domain/scoring";
 import { generateRecommendations } from "../domain/recommendations/engine";
-import { baselineAssumptions, type ScenarioAssumptions } from "../domain/scenarios/model";
+import type { ScenarioAssumptions } from "../domain/scenarios/model";
+import { deriveScenarioAssumptions } from "../domain/scenarios/derive";
 import { SCENARIO_LABELS, type ScenarioType } from "../domain/constants";
 
 /**
@@ -24,26 +25,7 @@ function monthsBefore(months: number): Date {
 }
 
 export function deriveScenarios(spec: BusinessSpec): Record<ScenarioType, ScenarioAssumptions> {
-  const c = spec.circular;
-  return {
-    baseline: baselineAssumptions(spec.baseline),
-    circular_base: c,
-    upside: {
-      ...c,
-      revenueDeltaPct: c.revenueDeltaPct + 8,
-      materialCostDeltaPct: c.materialCostDeltaPct - 3,
-      recurringRevenueSharePct: Math.min(100, c.recurringRevenueSharePct + 8),
-      customerRetentionPct: Math.min(100, c.customerRetentionPct + 5),
-    },
-    downside: {
-      ...c,
-      revenueDeltaPct: c.revenueDeltaPct - 12,
-      materialCostDeltaPct: c.materialCostDeltaPct + 8,
-      energyCostDeltaPct: c.energyCostDeltaPct + 6,
-      capex: Math.round(c.capex * 1.1),
-      customerRetentionPct: Math.max(0, c.customerRetentionPct - 8),
-    },
-  };
+  return deriveScenarioAssumptions(spec.baseline, spec.circular);
 }
 
 type DB = NeonHttpDatabase<typeof schema>;
