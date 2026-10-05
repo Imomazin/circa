@@ -2,60 +2,110 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Circa design tokens.
+ * Light: warm stone / sand surfaces, graphite ink, forest + copper reserved
+ * for brand, value and status. Dark: graphite field with the same accents.
+ */
 :root {
-  --background: #f6f5f2;
-  --foreground: #14181c;
-  --card: #ffffff;
-  --card-foreground: #14181c;
-  --surface: #efede9;
-  --muted: #eeece8;
-  --muted-foreground: #6f6b65;
-  --border: #dcd8d1;
-  --input: #dcd8d1;
-  --ring: #26705d;
+  --background: #f4f2ec;
+  --foreground: #161b20;
+  --card: #fbfaf7;
+  --card-foreground: #161b20;
+  --surface: #eceae2;
+  --surface-2: #e4e1d6;
+  --muted: #e9e5db;
+  --muted-foreground: #6d665d;
+  --border: #ded7ca;
+  --border-strong: #cabfae;
+  --input: #d6cfc1;
+  --ring: #22705b;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-sans);
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #101418;
-    --foreground: #eceae6;
-    --card: #181d22;
-    --card-foreground: #eceae6;
-    --surface: #14191e;
-    --muted: #1f252b;
-    --muted-foreground: #a4abb2;
-    --border: #2a3138;
-    --input: #2a3138;
-    --ring: #3f8d78;
+    --background: #0e1316;
+    --foreground: #e8e9e6;
+    --card: #161d22;
+    --card-foreground: #e8e9e6;
+    --surface: #121a1f;
+    --surface-2: #1a232a;
+    --muted: #1b242b;
+    --muted-foreground: #9aa3ab;
+    --border: #28323a;
+    --border-strong: #3a454e;
+    --input: #2b353d;
+    --ring: #3b8f76;
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #101418;
-  --foreground: #eceae6;
-  --card: #181d22;
-  --card-foreground: #eceae6;
-  --surface: #14191e;
-  --muted: #1f252b;
-  --muted-foreground: #a4abb2;
-  --border: #2a3138;
-  --input: #2a3138;
-  --ring: #3f8d78;
+  --background: #0e1316;
+  --foreground: #e8e9e6;
+  --card: #161d22;
+  --card-foreground: #e8e9e6;
+  --surface: #121a1f;
+  --surface-2: #1a232a;
+  --muted: #1b242b;
+  --muted-foreground: #9aa3ab;
+  --border: #28323a;
+  --border-strong: #3a454e;
+  --input: #2b353d;
+  --ring: #3b8f76;
 }
 
 * {
   border-color: var(--border);
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-feature-settings: "cv05" 1, "ss01" 1;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display type: headings and the brand use the grotesque, tightened. */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+/* Tabular, lining figures everywhere numbers are compared. */
+.tabular-nums,
+th,
+td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Consistent, visible focus for keyboard users. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--ring) 22%, transparent);
+}
+
+/* Hairline helper used across surfaces. */
+.border-hairline {
+  border-color: var(--border);
 }
 
 /* Print styles for the investment case. */
@@ -81,6 +131,26 @@ body {
   height: 6px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: var(--border);
+  background-color: var(--border-strong);
   border-radius: 3px;
+}
+
+/* Subtle entrance for route content — calm, not flashy. */
+@keyframes circa-rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-rise {
+  animation: circa-rise 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    animation: none;
+  }
 }

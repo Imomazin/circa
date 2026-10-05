@@ -37,12 +37,13 @@ export function ConfidenceBadge({ level }: { level: ConfidenceLevel }) {
   return <Badge variant={variant}>{level} confidence</Badge>;
 }
 
-/** Colour for a score value, used by meters and rings. */
+/** Colour for a score value, used by meters and rings. Mineral ramp:
+ *  forest → sea-green → copper → brick, never a traffic-light green/red. */
 export function scoreColor(score: number): string {
-  if (score >= 65) return "#1a594a"; // evergreen
-  if (score >= 50) return "#3f8d78";
-  if (score >= 35) return "#c98a2b"; // amber
-  return "#b4472f"; // muted red
+  if (score >= 65) return "#185847"; // evergreen 600
+  if (score >= 50) return "#3b8f76"; // evergreen 400
+  if (score >= 35) return "#b87333"; // copper 400
+  return "#b4472f"; // brick
 }
 
 /** Horizontal meter for a 0-100 score. */
@@ -67,7 +68,7 @@ export function ScoreMeter({
         </div>
       )}
       <div
-        className="h-2 w-full overflow-hidden rounded-full bg-charcoal-100 dark:bg-charcoal-700"
+        className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2"
         role="meter"
         aria-valuenow={Math.round(pct)}
         aria-valuemin={0}
