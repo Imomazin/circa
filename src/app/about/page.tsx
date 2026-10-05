@@ -52,8 +52,8 @@ export default function AboutPage() {
         <Prose title="Status & disclaimer">
           <ul>
             <li>Circa is a <strong>product demonstrator</strong>, not a production system.</li>
-            <li>All demonstration data is <strong>synthetic</strong>.</li>
-            <li>Scores and recommendations are <strong>prototype decision-support outputs</strong>.</li>
+            <li>All demonstration data is <strong>illustrative</strong>.</li>
+            <li>Scores and recommendations are <strong>decision-support outputs</strong> for evaluation.</li>
             <li>Nothing here implies Zero Waste Scotland or CivTech endorsement, approval or deployment.</li>
           </ul>
         </Prose>

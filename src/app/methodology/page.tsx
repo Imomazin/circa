@@ -20,7 +20,7 @@ export default function MethodologyPage() {
       <PageHeader
         eyebrow="Trust & governance"
         title="Methodology"
-        description="How Circa turns an assessment into prototype decision-support scores — transparently, and without a black box."
+        description="How Circa turns an assessment into decision-support scores — transparently, and without a black box."
       />
       <div className="mb-6"><DisclaimerBanner /></div>
 
@@ -49,7 +49,7 @@ export default function MethodologyPage() {
           </CardContent>
         </Card>
 
-        <Prose title="How prototype scoring works">
+        <Prose title="How the scoring works">
           <p>
             Each dimension is a <strong>transparent weighted average</strong> of 4–12 component sub-scores, each on a 0–100 scale.
             Component weights sum to 1 within a dimension and are fixed in code (see <code>src/domain/scoring</code>). Some inputs
@@ -88,9 +88,9 @@ export default function MethodologyPage() {
 
         <Prose title="Limitations">
           <ul>
-            <li>Scores are <strong>prototype decision-support outputs</strong>, not scientifically validated measures.</li>
+            <li>Scores are <strong>decision-support outputs</strong> for evaluation, not scientifically validated measures.</li>
             <li>Weights are expert-set defaults, not empirically calibrated against outcomes.</li>
-            <li>All demonstrator data is synthetic and illustrative.</li>
+            <li>All data in the demonstrator is illustrative.</li>
             <li>The financial model is deliberately simple (annual, single-period payback) and omits discounting and tax.</li>
           </ul>
         </Prose>

@@ -55,7 +55,7 @@ export default async function InvestmentCasePage({ params }: { params: Promise<{
         <CardContent className="flex flex-col gap-6 p-6 sm:p-8">
           {/* Header */}
           <header className="border-b border-border pb-4">
-            <p className="text-2xs font-semibold uppercase tracking-widest text-amber-500">Investment case · Prototype decision-support</p>
+            <p className="text-2xs font-semibold uppercase tracking-widest text-copper-500">Investment case · Decision-support</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">{org.name}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {org.sector} · {org.region} · {org.companySize}
@@ -176,7 +176,7 @@ export default async function InvestmentCasePage({ params }: { params: Promise<{
           </Section>
 
           <footer className="border-t border-border pt-3 text-2xs text-muted-foreground">
-            Circa product demonstrator · All data is synthetic · Prototype decision-support outputs, not validated measures ·
+            Circa demonstrator · Illustrative data · Decision-support outputs for evaluation, not validated measures ·
             No Zero Waste Scotland or CivTech endorsement implied · Ambidexters Ltd × The DataKirk SCIO · CivTech 12.3.
           </footer>
         </CardContent>

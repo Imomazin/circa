@@ -23,7 +23,7 @@ export default async function GovernancePage() {
       <div className="flex flex-col gap-6">
         <Prose title="Data & privacy">
           <ul>
-            <li>All demonstrator data is <strong>synthetic</strong>; no real business or personal data is used.</li>
+            <li>All demonstrator data is <strong>illustrative</strong>; no real business or personal data is used.</li>
             <li>Database credentials are supplied only through environment variables and are never committed to the repository.</li>
             <li>The public repository is treated as externally visible; no confidential partnership terms or client-sensitive data are stored in it.</li>
             <li>Aggregate programme views do not expose business-level data unnecessarily.</li>
@@ -33,7 +33,7 @@ export default async function GovernancePage() {
         <Prose title="Decision accountability">
           <ul>
             <li>Circa supports human decisions; it does not make automated funding or policy decisions.</li>
-            <li>Scores are prototype decision-support outputs and are labelled as such throughout the product.</li>
+            <li>Scores are decision-support outputs for evaluation and are labelled as such throughout the product.</li>
             <li>Every score is explainable down to its component weights and drivers.</li>
             <li>Material actions — assessment updates, score recalculations, scenario changes and demo resets — are recorded in the audit trail.</li>
           </ul>

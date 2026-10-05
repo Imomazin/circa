@@ -101,12 +101,7 @@ export function SectionTitle({
 /** Quiet, unobtrusive demonstrator disclosure — a footnote, not a warning. */
 export function DisclaimerBanner({ className }: { className?: string }) {
   return (
-    <p
-      className={cn(
-        "border-t border-border pt-3 text-2xs leading-relaxed text-muted-foreground",
-        className,
-      )}
-    >
+    <p className={cn("text-2xs leading-relaxed text-muted-foreground/90", className)}>
       Illustrative dataset for the CivTech 12.3 demonstrator. Scores and recommendations are
       decision-support outputs for evaluation, and imply no Zero Waste Scotland or CivTech endorsement.
     </p>

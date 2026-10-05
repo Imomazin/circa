@@ -6,7 +6,7 @@ import { SectionTitle } from "@/components/primitives";
 import { StageTag, StrengthBar, FamilyDot } from "@/components/network/elements";
 import { HorizontalBars, type NamedValue } from "@/components/charts";
 import { FAMILY_FACTORS } from "@/domain/network/families";
-import { formatGBPCompact, formatTonnes } from "@/lib/format";
+import { formatGBPCompact } from "@/lib/format";
 import type { MatchView } from "@/lib/view-types";
 
 export interface OverviewData {
@@ -133,7 +133,7 @@ export function Overview({ data }: { data: OverviewData }) {
             <CardTitle>Value by material family</CardTitle>
           </CardHeader>
           <CardContent>
-            <HorizontalBars data={data.familyValues} unit="" height={240} valueFormat={(v) => formatGBPCompact(v)} />
+            <HorizontalBars data={data.familyValues} height={240} format="gbpCompact" />
           </CardContent>
         </Card>
         <Card>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { formatGBPCompact, formatNumber } from "@/lib/format";
 import {
   ResponsiveContainer,
   BarChart,
@@ -90,15 +91,22 @@ export function HorizontalBars({
   unit,
   color = PALETTE.evergreen,
   domain,
-  valueFormat,
+  format,
 }: {
   data: NamedValue[];
   height?: number;
   unit?: string;
   color?: string;
   domain?: [number, number];
-  valueFormat?: (v: number) => string;
+  /** Serializable format key (safe to pass from server components). */
+  format?: "gbpCompact" | "number";
 }) {
+  const valueFormat =
+    format === "gbpCompact"
+      ? (v: number) => formatGBPCompact(v)
+      : format === "number"
+        ? (v: number) => formatNumber(v)
+        : undefined;
   return (
     <div className="text-charcoal-500 dark:text-charcoal-300" style={{ width: "100%", height }}>
       <ResponsiveContainer>

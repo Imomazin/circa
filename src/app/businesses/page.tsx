@@ -17,8 +17,8 @@ export default async function BusinessesPage() {
     <div>
       <PageHeader
         eyebrow="Workspace"
-        title="Business directory"
-        description="Synthetic Scottish businesses exploring circular opportunities. Search, filter and sort by commercial standing, then open a profile for the full assessment."
+        title="Organisations"
+        description="Scottish businesses exploring circular opportunities across ten sectors. Search, filter and sort by commercial standing, then open a profile for the full assessment and network position."
         actions={
           <>
             <a

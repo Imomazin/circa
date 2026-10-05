@@ -66,7 +66,7 @@ export default function DemoPage() {
         <ul>
           <li>Do not present the scores as validated or as official Zero Waste Scotland outputs.</li>
           <li>Do not imply CivTech endorsement or a production deployment.</li>
-          <li>Be explicit that the data is synthetic and the scores are prototype decision-support.</li>
+          <li>Be explicit that the data is illustrative and the scores are decision-support outputs.</li>
         </ul>
       </Prose>
 
