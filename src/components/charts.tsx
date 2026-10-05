@@ -56,7 +56,7 @@ export const CATEGORICAL = [
 
 const axisStyle = { fontSize: 11, fill: "currentColor" } as const;
 
-function CircaTooltip({ active, payload, label, unit }: any) {
+function CircaTooltip({ active, payload, label, unit, format }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-md border border-border bg-card px-2.5 py-1.5 text-xs shadow-md">
@@ -66,8 +66,11 @@ function CircaTooltip({ active, payload, label, unit }: any) {
           <span className="inline-block h-2 w-2 rounded-sm" style={{ background: p.color || p.fill }} />
           <span className="text-foreground">{p.name}:</span>
           <span className="font-medium tabular-nums text-foreground">
-            {typeof p.value === "number" ? p.value.toLocaleString("en-GB") : p.value}
-            {unit ?? ""}
+            {typeof p.value === "number"
+              ? format
+                ? format(p.value)
+                : `${p.value.toLocaleString("en-GB")}${unit ?? ""}`
+              : p.value}
           </span>
         </p>
       ))}
@@ -87,17 +90,19 @@ export function HorizontalBars({
   unit,
   color = PALETTE.evergreen,
   domain,
+  valueFormat,
 }: {
   data: NamedValue[];
   height?: number;
   unit?: string;
   color?: string;
   domain?: [number, number];
+  valueFormat?: (v: number) => string;
 }) {
   return (
     <div className="text-charcoal-500 dark:text-charcoal-300" style={{ width: "100%", height }}>
       <ResponsiveContainer>
-        <BarChart data={data} layout="vertical" margin={{ left: 8, right: 24, top: 4, bottom: 4 }}>
+        <BarChart data={data} layout="vertical" margin={{ left: 8, right: 40, top: 4, bottom: 4 }}>
           <CartesianGrid horizontal={false} stroke="currentColor" strokeOpacity={0.12} />
           <XAxis type="number" tick={axisStyle} domain={domain} tickLine={false} axisLine={false} />
           <YAxis
@@ -108,9 +113,17 @@ export function HorizontalBars({
             tickLine={false}
             axisLine={false}
           />
-          <Tooltip content={<CircaTooltip unit={unit} />} cursor={{ fill: "currentColor", fillOpacity: 0.05 }} />
+          <Tooltip
+            content={<CircaTooltip unit={unit} format={valueFormat} />}
+            cursor={{ fill: "currentColor", fillOpacity: 0.05 }}
+          />
           <Bar dataKey="value" name="Value" radius={[0, 4, 4, 0]} fill={color}>
-            <LabelList dataKey="value" position="right" style={{ fontSize: 11, fill: "currentColor" }} />
+            <LabelList
+              dataKey="value"
+              position="right"
+              formatter={valueFormat ? (v: number) => valueFormat(v) : undefined}
+              style={{ fontSize: 11, fill: "currentColor" }}
+            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>

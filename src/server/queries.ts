@@ -37,9 +37,29 @@ import {
 import type { DashboardRow } from "@/lib/view-types";
 
 /**
- * Server-side data access. When DATABASE_URL is absent, the demonstrator uses
- * the exact deterministic synthetic dataset that is normally seeded into Neon.
+ * Server-side data access.
+ *
+ * Circa runs identically with or without a database. When DATABASE_URL is
+ * absent — or when a configured database is unreachable — every read falls
+ * back to the exact deterministic synthetic dataset that is otherwise seeded
+ * into Postgres, so no page ever collapses for want of a connection. When a
+ * database is connected the same functions serve live, persisted data.
  */
+
+let warned = false;
+/** Run the DB query; on any failure, log once and serve the deterministic demo. */
+async function withFallback<T>(demo: () => T, query: () => Promise<T>): Promise<T> {
+  if (!process.env.DATABASE_URL) return demo();
+  try {
+    return await query();
+  } catch (error) {
+    if (!warned) {
+      console.warn("[circa] Database unavailable — serving the deterministic dataset.", error);
+      warned = true;
+    }
+    return demo();
+  }
+}
 
 export interface BusinessSummary {
   org: Organisation;
@@ -109,25 +129,25 @@ function demoSummaries(): BusinessSummary[] {
 }
 
 export async function getAllBusinessSummaries(): Promise<BusinessSummary[]> {
-  if (!process.env.DATABASE_URL) return demoSummaries();
-  const [orgs, allAssessments, allScores] = await Promise.all([
-    db.select().from(organisations),
-    db.select().from(assessments),
-    db.select().from(scores),
-  ]);
-  const assessmentByOrg = new Map(allAssessments.map((a) => [a.organisationId, a]));
-  const scoreByAssessment = new Map(allScores.map((s) => [s.assessmentId, s]));
-
-  const out: BusinessSummary[] = [];
-  for (const org of orgs) {
-    const a = assessmentByOrg.get(org.id);
-    if (!a) continue;
-    const s = scoreByAssessment.get(a.id);
-    if (!s) continue;
-    out.push({ org, assessment: a, score: s, bundle: bundleFor(a, s) });
-  }
-  out.sort((x, y) => y.score.headline - x.score.headline);
-  return out;
+  return withFallback(demoSummaries, async () => {
+    const [orgs, allAssessments, allScores] = await Promise.all([
+      db.select().from(organisations),
+      db.select().from(assessments),
+      db.select().from(scores),
+    ]);
+    const assessmentByOrg = new Map(allAssessments.map((a) => [a.organisationId, a]));
+    const scoreByAssessment = new Map(allScores.map((s) => [s.assessmentId, s]));
+    const out: BusinessSummary[] = [];
+    for (const org of orgs) {
+      const a = assessmentByOrg.get(org.id);
+      if (!a) continue;
+      const s = scoreByAssessment.get(a.id);
+      if (!s) continue;
+      out.push({ org, assessment: a, score: s, bundle: bundleFor(a, s) });
+    }
+    out.sort((x, y) => y.score.headline - x.score.headline);
+    return out;
+  });
 }
 
 export function summaryToRow({ org, assessment, score, bundle }: BusinessSummary): DashboardRow {
@@ -224,125 +244,135 @@ function demoBusinessDetail(id: string): BusinessDetail | null {
 }
 
 export async function getBusinessDetail(id: string): Promise<BusinessDetail | null> {
-  if (!process.env.DATABASE_URL) return demoBusinessDetail(id);
-  const org = (await db.select().from(organisations).where(eq(organisations.id, id)))[0];
-  if (!org) return null;
-  const assessment = (
-    await db.select().from(assessments).where(eq(assessments.organisationId, id))
-  )[0];
-  if (!assessment) return null;
+  return withFallback(
+    () => demoBusinessDetail(id),
+    async () => {
+      const org = (await db.select().from(organisations).where(eq(organisations.id, id)))[0];
+      if (!org) return null;
+      const assessment = (
+        await db.select().from(assessments).where(eq(assessments.organisationId, id))
+      )[0];
+      if (!assessment) return null;
 
-  const [score, scenarioRows, evidence, recs, resDeps, supRisks] = await Promise.all([
-    db.select().from(scores).where(eq(scores.assessmentId, assessment.id)),
-    db.select().from(financialScenarios).where(eq(financialScenarios.assessmentId, assessment.id)),
-    db.select().from(evidenceItems).where(eq(evidenceItems.assessmentId, assessment.id)),
-    db.select().from(recommendations).where(eq(recommendations.assessmentId, assessment.id)),
-    db.select().from(resourceDependencies).where(eq(resourceDependencies.organisationId, id)),
-    db.select().from(supplierRisks).where(eq(supplierRisks.organisationId, id)),
-  ]);
-  const s = score[0];
-  if (!s) return null;
+      const [score, scenarioRows, evidence, recs, resDeps, supRisks] = await Promise.all([
+        db.select().from(scores).where(eq(scores.assessmentId, assessment.id)),
+        db.select().from(financialScenarios).where(eq(financialScenarios.assessmentId, assessment.id)),
+        db.select().from(evidenceItems).where(eq(evidenceItems.assessmentId, assessment.id)),
+        db.select().from(recommendations).where(eq(recommendations.assessmentId, assessment.id)),
+        db.select().from(resourceDependencies).where(eq(resourceDependencies.organisationId, id)),
+        db.select().from(supplierRisks).where(eq(supplierRisks.organisationId, id)),
+      ]);
+      const s = score[0];
+      if (!s) return null;
 
-  const byType = new Map(scenarioRows.map((r) => [r.scenarioType as ScenarioType, r]));
-  const assumptionsByType = {
-    baseline: byType.get("baseline")!.assumptions,
-    circular_base: byType.get("circular_base")!.assumptions,
-    upside: byType.get("upside")!.assumptions,
-    downside: byType.get("downside")!.assumptions,
-  } as Record<ScenarioType, ScenarioAssumptions>;
+      const byType = new Map(scenarioRows.map((r) => [r.scenarioType as ScenarioType, r]));
+      const assumptionsByType = {
+        baseline: byType.get("baseline")!.assumptions,
+        circular_base: byType.get("circular_base")!.assumptions,
+        upside: byType.get("upside")!.assumptions,
+        downside: byType.get("downside")!.assumptions,
+      } as Record<ScenarioType, ScenarioAssumptions>;
 
-  return {
-    org,
-    assessment,
-    score: s,
-    bundle: bundleFor(assessment, s),
-    scenarios: scenarioRows
-      .map((r) => ({
-        type: r.scenarioType as ScenarioType,
-        label: r.label,
-        assumptions: r.assumptions,
-      }))
-      .sort((a, b) => scenarioOrder(a.type) - scenarioOrder(b.type)),
-    scenarioSet: computeScenarioSet(assessment.baseline, assumptionsByType),
-    baselineEbitda: baselineEbitda(assessment.baseline),
-    evidence: evidence.sort((a, b) => b.dateRecorded.getTime() - a.dateRecorded.getTime()),
-    recommendations: recs,
-    resourceDependencies: resDeps,
-    supplierRisks: supRisks,
-  };
+      return {
+        org,
+        assessment,
+        score: s,
+        bundle: bundleFor(assessment, s),
+        scenarios: scenarioRows
+          .map((r) => ({ type: r.scenarioType as ScenarioType, label: r.label, assumptions: r.assumptions }))
+          .sort((a, b) => scenarioOrder(a.type) - scenarioOrder(b.type)),
+        scenarioSet: computeScenarioSet(assessment.baseline, assumptionsByType),
+        baselineEbitda: baselineEbitda(assessment.baseline),
+        evidence: evidence.sort((a, b) => b.dateRecorded.getTime() - a.dateRecorded.getTime()),
+        recommendations: recs,
+        resourceDependencies: resDeps,
+        supplierRisks: supRisks,
+      };
+    },
+  );
 }
 
 function scenarioOrder(t: ScenarioType): number {
   return { baseline: 0, circular_base: 1, upside: 2, downside: 3 }[t];
 }
 
+function demoSensitivity(assessmentId: string): { rows: SensitivityRow[] } | null {
+  const spec = BUSINESSES.find((b) => b.id === assessmentId);
+  if (!spec) return null;
+  const circular = deriveScenarios(spec).circular_base;
+  return { rows: runSensitivity(spec.baseline, circular, baselineEbitda(spec.baseline)).rows };
+}
+
 export async function getScenarioSensitivity(
   assessmentId: string,
 ): Promise<{ rows: SensitivityRow[] } | null> {
-  if (!process.env.DATABASE_URL) {
-    const spec = BUSINESSES.find((b) => b.id === assessmentId);
-    if (!spec) return null;
-    const circular = deriveScenarios(spec).circular_base;
-    return { rows: runSensitivity(spec.baseline, circular, baselineEbitda(spec.baseline)).rows };
-  }
-  const assessment = (
-    await db.select().from(assessments).where(eq(assessments.id, assessmentId))
-  )[0];
-  if (!assessment) return null;
-  const circular = (
-    await db
-      .select()
-      .from(financialScenarios)
-      .where(eq(financialScenarios.assessmentId, assessmentId))
-  ).find((r) => r.scenarioType === "circular_base");
-  if (!circular) return null;
-  const { rows } = runSensitivity(
-    assessment.baseline,
-    circular.assumptions,
-    baselineEbitda(assessment.baseline),
+  return withFallback(
+    () => demoSensitivity(assessmentId),
+    async () => {
+      const assessment = (
+        await db.select().from(assessments).where(eq(assessments.id, assessmentId))
+      )[0];
+      if (!assessment) return null;
+      const circular = (
+        await db.select().from(financialScenarios).where(eq(financialScenarios.assessmentId, assessmentId))
+      ).find((r) => r.scenarioType === "circular_base");
+      if (!circular) return null;
+      const { rows } = runSensitivity(
+        assessment.baseline,
+        circular.assumptions,
+        baselineEbitda(assessment.baseline),
+      );
+      return { rows };
+    },
   );
-  return { rows };
+}
+
+function demoBenchmarks() {
+  const agg = new Map<
+    string,
+    { v: number; r: number; i: number; capex: number; n: number; models: Map<string, number> }
+  >();
+  for (const spec of BUSINESSES) {
+    const bundle = computeScores(spec.inputs, SEED_DATE.toISOString());
+    const a = agg.get(spec.sector) ?? { v: 0, r: 0, i: 0, capex: 0, n: 0, models: new Map<string, number>() };
+    a.v += bundle.viability.score;
+    a.r += bundle.resilience.score;
+    a.i += bundle.investor.score;
+    a.capex += spec.inputs.capexRequirement;
+    a.n += 1;
+    for (const model of spec.circularModels) a.models.set(model, (a.models.get(model) ?? 0) + 1);
+    agg.set(spec.sector, a);
+  }
+  return [...agg.entries()]
+    .map(([sector, a], idx) => ({
+      id: `benchmark-${idx}`,
+      sector,
+      avgViability: Math.round((a.v / a.n) * 10) / 10,
+      avgResilience: Math.round((a.r / a.n) * 10) / 10,
+      avgInvestor: Math.round((a.i / a.n) * 10) / 10,
+      avgCapexRequirement: Math.round(a.capex / a.n),
+      commonModel: [...a.models.entries()].sort((x, y) => y[1] - x[1])[0]?.[0] ?? "—",
+    }))
+    .sort((a, b) => b.avgViability - a.avgViability);
 }
 
 export async function getSectorBenchmarks() {
-  if (!process.env.DATABASE_URL) {
-    const agg = new Map<string, { v: number; r: number; i: number; capex: number; n: number; models: Map<string, number> }>();
-    for (const spec of BUSINESSES) {
-      const bundle = computeScores(spec.inputs, SEED_DATE.toISOString());
-      const a = agg.get(spec.sector) ?? { v: 0, r: 0, i: 0, capex: 0, n: 0, models: new Map<string, number>() };
-      a.v += bundle.viability.score;
-      a.r += bundle.resilience.score;
-      a.i += bundle.investor.score;
-      a.capex += spec.inputs.capexRequirement;
-      a.n += 1;
-      for (const model of spec.circularModels) a.models.set(model, (a.models.get(model) ?? 0) + 1);
-      agg.set(spec.sector, a);
-    }
-    return [...agg.entries()]
-      .map(([sector, a], idx) => ({
-        id: `benchmark-${idx}`,
-        sector,
-        avgViability: Math.round((a.v / a.n) * 10) / 10,
-        avgResilience: Math.round((a.r / a.n) * 10) / 10,
-        avgInvestor: Math.round((a.i / a.n) * 10) / 10,
-        avgCapexRequirement: Math.round(a.capex / a.n),
-        commonModel: [...a.models.entries()].sort((x, y) => y[1] - x[1])[0]?.[0] ?? "—",
-      }))
-      .sort((a, b) => b.avgViability - a.avgViability);
-  }
-  return db.select().from(sectorBenchmarks).orderBy(desc(sectorBenchmarks.avgViability));
+  return withFallback(demoBenchmarks, () =>
+    db.select().from(sectorBenchmarks).orderBy(desc(sectorBenchmarks.avgViability)),
+  );
 }
 
 export async function getProgrammeInsights() {
-  if (!process.env.DATABASE_URL) {
-    return PROGRAMME_INSIGHTS.map((row, idx) => ({ id: `programme-${idx}`, ...row }));
-  }
-  return db.select().from(programmeInsights);
+  return withFallback(
+    () => PROGRAMME_INSIGHTS.map((row, idx) => ({ id: `programme-${idx}`, ...row })),
+    () => db.select().from(programmeInsights),
+  );
 }
 
-export async function getAuditEvents(limit = 40) {
-  if (!process.env.DATABASE_URL) {
-    return demoSummaries().slice(0, limit).map((summary, idx) => ({
+function demoAudit(limit: number) {
+  return demoSummaries()
+    .slice(0, limit)
+    .map((summary, idx) => ({
       id: `audit-${idx}`,
       action: "assessment.seeded",
       entityType: "assessment",
@@ -351,35 +381,46 @@ export async function getAuditEvents(limit = 40) {
       detail: `Synthetic assessment available for ${summary.org.name} with headline score ${summary.score.headline}.`,
       createdAt: new Date(SEED_DATE.getTime() - idx * 60000),
     }));
-  }
-  return db.select().from(auditEvents).orderBy(desc(auditEvents.createdAt)).limit(limit);
+}
+
+export async function getAuditEvents(limit = 40) {
+  return withFallback(
+    () => demoAudit(limit),
+    () => db.select().from(auditEvents).orderBy(desc(auditEvents.createdAt)).limit(limit),
+  );
+}
+
+function demoScenarios(assessmentId: string) {
+  const spec = BUSINESSES.find((b) => b.id === assessmentId);
+  const summary = demoSummary(assessmentId);
+  if (!spec || !summary) return null;
+  const scenarios = deriveScenarios(spec);
+  return {
+    assessment: summary.assessment,
+    rows: (Object.keys(scenarios) as ScenarioType[]).map((type, idx) => ({
+      id: `scenario-${assessmentId}-${idx}`,
+      assessmentId,
+      scenarioType: type,
+      label: SCENARIO_LABELS[type],
+      assumptions: scenarios[type],
+      updatedAt: SEED_DATE,
+    })),
+  };
 }
 
 export async function getScenariosForAssessment(assessmentId: string) {
-  if (!process.env.DATABASE_URL) {
-    const spec = BUSINESSES.find((b) => b.id === assessmentId);
-    const summary = demoSummary(assessmentId);
-    if (!spec || !summary) return null;
-    const scenarios = deriveScenarios(spec);
-    return {
-      assessment: summary.assessment,
-      rows: (Object.keys(scenarios) as ScenarioType[]).map((type, idx) => ({
-        id: `scenario-${assessmentId}-${idx}`,
-        assessmentId,
-        scenarioType: type,
-        label: SCENARIO_LABELS[type],
-        assumptions: scenarios[type],
-        updatedAt: SEED_DATE,
-      })),
-    };
-  }
-  const assessment = (
-    await db.select().from(assessments).where(eq(assessments.id, assessmentId))
-  )[0];
-  if (!assessment) return null;
-  const rows = await db
-    .select()
-    .from(financialScenarios)
-    .where(eq(financialScenarios.assessmentId, assessmentId));
-  return { assessment, rows };
+  return withFallback(
+    () => demoScenarios(assessmentId),
+    async () => {
+      const assessment = (
+        await db.select().from(assessments).where(eq(assessments.id, assessmentId))
+      )[0];
+      if (!assessment) return null;
+      const rows = await db
+        .select()
+        .from(financialScenarios)
+        .where(eq(financialScenarios.assessmentId, assessmentId));
+      return { assessment, rows };
+    },
+  );
 }

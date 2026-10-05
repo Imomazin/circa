@@ -14,6 +14,7 @@ import {
   ResourceTable,
   SupplierTable,
 } from "@/components/detail-blocks";
+import { OrgNetworkPanel } from "@/components/network/org-network";
 import { getBusinessDetail } from "@/server/queries";
 import { formatGBP, formatGBPCompact, formatPct, formatPayback } from "@/lib/format";
 
@@ -160,13 +161,20 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
       </div>
 
       <div className="mt-6">
+        <SectionTitle hint="Material flows this organisation can supply or absorb">
+          Circular network position
+        </SectionTitle>
+        <OrgNetworkPanel orgId={org.id} />
+      </div>
+
+      <div className="mt-6">
         <SectionTitle hint={`${evidence.length} items`}>Evidence summary</SectionTitle>
         <Card>
           <CardContent className="p-0"><EvidenceTable items={evidence} /></CardContent>
         </Card>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-8">
         <DisclaimerBanner />
       </div>
     </div>

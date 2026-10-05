@@ -1,73 +1,31 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/primitives";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ScoreBadge } from "@/components/score";
-import { DonutChart } from "@/components/charts";
-import { formatGBPCompact } from "@/lib/format";
-import { getAllBusinessSummaries } from "@/server/queries";
+import { PageHeader, StatTile } from "@/components/primitives";
+import { DiscoveryBoard } from "@/components/network/discovery-board";
+import { getOpportunities, getNetworkOverview } from "@/server/network";
+import { formatGBPCompact, formatCarbon, formatTonnes } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Opportunities" };
-export const dynamic = "force-dynamic";
 
-export default async function OpportunitiesPage() {
-  const summaries = await getAllBusinessSummaries();
-  const modelDist = (() => {
-    const m = new Map<string, number>();
-    for (const s of summaries) for (const model of s.assessment.circularModels) m.set(model, (m.get(model) ?? 0) + 1);
-    return [...m.entries()].map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
-  })();
+export default function OpportunitiesPage() {
+  const matches = getOpportunities();
+  const { totals } = getNetworkOverview();
 
   return (
     <div>
       <PageHeader
-        eyebrow="Workspace"
-        title="Circular opportunities"
-        description="Every circular business opportunity in the portfolio, ranked by circular-opportunity strength alongside its commercial viability and capital need."
+        eyebrow="Decision intelligence"
+        title="Opportunity discovery"
+        description="Every commercial circular-economy opportunity in the network — a supplier material stream matched to a buyer's demand. Filter by material, pipeline stage and match strength to find where to focus."
       />
 
-      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Opportunity pipeline</CardTitle></CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            {summaries
-              .slice()
-              .sort((a, b) => b.score.opportunity - a.score.opportunity)
-              .map(({ org, assessment, score }) => (
-                <Link
-                  key={org.id}
-                  href={`/businesses/${org.id}`}
-                  className="block rounded-lg border border-border p-3 transition-colors hover:border-evergreen-300 hover:bg-charcoal-50/50 dark:hover:bg-charcoal-800/40"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground">{org.name}</p>
-                      <p className="text-2xs text-muted-foreground">{org.sector} · {org.region}</p>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      {assessment.circularModels.map((m) => (
-                        <Badge key={m} variant="evergreen">{m}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="mt-2 text-sm text-muted-foreground">{assessment.opportunitySummary}</p>
-                  <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                    <span>Opportunity <span className="font-medium text-foreground">{score.opportunity.toFixed(1)}</span></span>
-                    <span>Viability <span className="font-medium text-foreground">{score.viability.toFixed(1)}</span></span>
-                    <span>Capital <span className="font-medium text-foreground">{formatGBPCompact(assessment.inputs.capexRequirement)}</span></span>
-                    <span className="ml-auto"><ScoreBadge score={score.opportunity} /></span>
-                  </div>
-                </Link>
-              ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader><CardTitle>Circular models in play</CardTitle></CardHeader>
-          <CardContent><DonutChart data={modelDist} /></CardContent>
-        </Card>
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatTile label="Opportunities" value={totals.matchCount} accent="evergreen" />
+        <StatTile label="Combined value" value={formatGBPCompact(totals.totalValue)} sublabel="Indicative, per year" />
+        <StatTile label="Material diverted" value={formatTonnes(totals.diversionTonnes)} sublabel="From landfill / virgin" />
+        <StatTile label="Carbon benefit" value={formatCarbon(totals.carbonTonnes)} accent="copper" sublabel="Indicative, per year" />
       </div>
+
+      <DiscoveryBoard matches={matches} />
     </div>
   );
 }

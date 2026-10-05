@@ -46,3 +46,24 @@ export function formatPayback(years: number | null): string {
   if (years === null) return "—";
   return `${years.toFixed(1)} yr`;
 }
+
+/** Tonnes with thousands separators, e.g. 1,298 t. */
+export function formatTonnes(value: number): string {
+  return `${formatNumber(Math.round(value))} t`;
+}
+
+/** Compact tonnes for large figures, e.g. 4.5kt. */
+export function formatTonnesCompact(value: number): string {
+  if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}kt`;
+  return `${Math.round(value)} t`;
+}
+
+/** Distance in km, e.g. 142 km. */
+export function formatKm(value: number): string {
+  return `${formatNumber(Math.round(value))} km`;
+}
+
+/** Compact CO2e, e.g. 4,480 tCO₂e. */
+export function formatCarbon(value: number): string {
+  return `${formatNumber(Math.round(value))} tCO₂e`;
+}

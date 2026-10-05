@@ -1,4 +1,5 @@
 import type { ScoreBand, ConfidenceLevel } from "@/domain/constants";
+import type { MaterialStream, OpportunityMatch } from "@/domain/network/types";
 
 /** Compact, serialisable row shapes passed from server components to client
  * components (charts, filters). Keeping these lean avoids shipping full score
@@ -25,4 +26,21 @@ export interface DashboardRow {
   projectedOpportunity: number;
   viabilityBarriers: string[];
   investorBarriers: string[];
+}
+
+/** An opportunity match enriched with organisation names for the client. */
+export interface MatchView extends OpportunityMatch {
+  supplierName: string;
+  supplierRegion: string;
+  supplierSector: string;
+  buyerName: string;
+  buyerRegion: string;
+  buyerSector: string;
+}
+
+/** A material stream enriched with its organisation's identity. */
+export interface StreamView extends MaterialStream {
+  orgName: string;
+  orgRegion: string;
+  orgSector: string;
 }
