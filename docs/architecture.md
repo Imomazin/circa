@@ -61,6 +61,8 @@ Reads happen in server components through `server/queries.ts`. Mutations (scenar
 
 ## Deployment
 
-- **Hosting:** Vercel, connected to `Imomazin/circa`. The development branch deploys as a **preview**; `main` is never used for deployment in this demonstrator.
-- **Database:** Neon project `circa`. `DATABASE_URL` is configured as an encrypted environment variable in Vercel and never committed.
-- **Runtime:** Node 20+ (Vercel-supported). Pages that read data are `force-dynamic`, so they render on demand against the live database.
+The app is **Vercel-ready but not yet connected** — the repository has not been imported into a Vercel project, so there is no live preview or production URL yet. Connecting it is a one-time manual step in the Vercel dashboard (see the [`README`](../README.md#vercel-deployment)):
+
+- **Hosting (intended):** Vercel, importing `Imomazin/circa` as a project named `circa` (or `circa-civtech`). Deploy the development branch as a **preview**; `main` is not used for deployment in this demonstrator.
+- **Database:** Neon project `circa` (already provisioned and seeded). Once the repo is imported, set `DATABASE_URL` (from the Neon connection string) as an encrypted environment variable in Vercel — it is never committed. Because the data layer already exists and is seeded, the app serves real data as soon as `DATABASE_URL` is set.
+- **Runtime:** Node 20+ (Vercel-supported). Pages that read data are `force-dynamic`, so they render on demand against the live database. The DB client is lazily initialised, so a build without `DATABASE_URL` still succeeds.
