@@ -4,7 +4,7 @@
 
 Circa helps organisations answer one question: **does this circular business opportunity make commercial sense?** It scores commercial viability, resilience and investor readiness, models financial scenarios, and surfaces the evidence and actions behind each judgement — so SME leaders, advisers, programme teams and funders can make better commercial decisions about circular-economy moves.
 
-> **Product demonstrator.** All demonstration data is synthetic. Scores and recommendations are prototype decision-support outputs, not validated measures. Nothing here implies Zero Waste Scotland or CivTech endorsement or a production deployment.
+> **Product demonstrator.** All demonstration data is illustrative. Scores and recommendations are decision-support outputs for evaluation, not validated measures. Nothing here implies Zero Waste Scotland or CivTech endorsement or a production deployment.
 
 ---
 
@@ -20,18 +20,26 @@ See [`docs/civtech-alignment.md`](docs/civtech-alignment.md) for a requirement-b
 
 ---
 
-## What it does
+### Decision intelligence
 
-- **Executive dashboard** — portfolio-level commercial intelligence: viability by sector, capital by circular model, a viability-vs-evidence scatter that flags where to validate, distributions and an opportunity pipeline, all filterable.
-- **Business directory & profiles** — searchable, sortable synthetic Scottish businesses with full commercial profiles, resource dependencies and supplier risks, plus one-click **portfolio CSV export**.
-- **Add a business** — a guided multi-step wizard (profile → circular opportunity → financial baseline → circular case → commercial signals) that derives the five scores, four financial scenarios and recommendation set from the same engine, with live scoring as you type — no faked data.
-- **Compare** — put up to three businesses side by side across the five dimensions (radar overlay + per-dimension meters) and their capital and opportunity figures.
-- **Assessment workflow** — a multi-step assessment that recomputes scores live as you edit, persists inputs and recalculated scores, and lets you **add or remove evidence items** that feed Evidence Confidence.
-- **Commercial scoring engine** — five transparent, deterministic dimensions: Commercial Viability, Commercial Resilience, Investor Readiness, Circular Opportunity and Evidence Confidence, each explained down to weighted components and drivers.
-- **Financial scenario modeller** — baseline / circular base / upside / downside cases with editable assumptions, live recalculation, persistence, and single-variable sensitivity analysis.
+- **Executive overview** — a single decision screen: combined opportunity value, material diverted and carbon benefit, the opportunities needing attention, the pipeline, recent developments, and focused reads on value by material, high-potential sectors and geographic concentration.
+- **Opportunity discovery** — every commercial circular opportunity in the network (a supplier material stream matched to a buyer's demand), with a working filter rail (material family, pipeline stage, match strength, search) and sort by value, carbon, volume or proximity.
+- **Opportunity detail** — participating organisations and their streams, commercial & impact read-out (value, avoided disposal, carbon, diversion, haulage), constraints and risks, a geographic schematic, related opportunities, and a **workflow tracker** that advances pipeline stages, assigns owners and logs activity.
+- **Material intelligence** — supply/demand balance per material family, the suppliers and buyers behind each, and **surfaced gaps** where supply has no buyer yet.
+- **Matching & pipeline** — a nine-stage funnel and a stage board showing how opportunities progress from identified to realised.
+
+### Commercial assessment
+
+- **Organisations & profiles** — searchable, sortable Scottish businesses with commercial profiles, resource dependencies, supplier risks, their **circular-network position**, and one-click portfolio CSV export.
+- **Scoring engine** — five transparent, deterministic dimensions (Commercial Viability, Commercial Resilience, Investor Readiness, Circular Opportunity, Evidence Confidence), each explained to weighted components and drivers.
+- **Add a business** — a guided wizard that derives scores, scenarios and recommendations from the engine with live scoring — no faked data.
+- **Compare** — up to three organisations side by side across the five dimensions.
+- **Assessment workflow** — live re-scoring as you edit, with add/remove evidence feeding Evidence Confidence.
+- **Financial scenario modeller** — baseline / circular / upside / downside with editable assumptions, live recalculation and single-variable sensitivity.
 - **Investor readiness & investment case** — a readiness profile and a print-friendly investment case.
-- **Programme intelligence** — an anonymised, aggregate view for policy and programme teams.
-- **Methodology, governance & guided demo** — transparency, an audit trail, and a 6–8 minute walkthrough with a guarded demo-data reset.
+- **Programme analytics, methodology, governance & guided demo** — aggregate views, transparency, an audit trail and a guided walkthrough.
+
+Circa runs **with or without a database**: when `DATABASE_URL` is absent — or a configured database is unreachable — every read falls back to the same deterministic dataset, so the demonstrator never collapses for want of a connection.
 
 ---
 
@@ -62,6 +70,7 @@ src/
     scoring/           # Commercial scoring engine (viability, resilience, investor, opportunity, evidence)
     scenarios/         # Financial scenario modeller + sensitivity
     recommendations/   # Deterministic recommendation engine
+    network/           # Circular network: material streams, families, geo + matching engine
     constants.ts       # Controlled vocabularies + banding
   db/                  # Drizzle schema, client, migration runner, seed
   lib/                 # Validation (Zod), formatting, analytics, view types
