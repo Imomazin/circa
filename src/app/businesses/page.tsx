@@ -5,13 +5,18 @@ import { PageHeader } from "@/components/primitives";
 import { buttonVariants } from "@/components/ui/button";
 import { BusinessDirectory } from "@/components/businesses/directory";
 import { getAllBusinessSummaries, summaryToRow } from "@/server/queries";
+import { getOrgNetwork } from "@/server/network";
+import type { DirectoryRow } from "@/lib/view-types";
 
-export const metadata: Metadata = { title: "Businesses" };
+export const metadata: Metadata = { title: "Organisations" };
 export const dynamic = "force-dynamic";
 
 export default async function BusinessesPage() {
   const summaries = await getAllBusinessSummaries();
-  const rows = summaries.map(summaryToRow);
+  const rows: DirectoryRow[] = summaries.map((s) => {
+    const net = getOrgNetwork(s.org.id);
+    return { ...summaryToRow(s), opportunities: net.matches.length, networkValue: net.networkValue };
+  });
 
   return (
     <div>

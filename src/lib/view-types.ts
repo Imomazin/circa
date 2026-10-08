@@ -28,6 +28,12 @@ export interface DashboardRow {
   investorBarriers: string[];
 }
 
+/** A directory row: portfolio scores plus the organisation's network position. */
+export interface DirectoryRow extends DashboardRow {
+  opportunities: number;
+  networkValue: number;
+}
+
 /** An opportunity match enriched with organisation names for the client. */
 export interface MatchView extends OpportunityMatch {
   supplierName: string;
