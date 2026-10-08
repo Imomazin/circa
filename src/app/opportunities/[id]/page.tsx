@@ -40,6 +40,22 @@ export default async function OpportunityPage({ params }: { params: Promise<{ id
   const { match, supply, demand, familyNote, related } = detail;
   const color = FAMILY_FACTORS[match.family].color;
 
+  // Opportunity thesis — a plain-language investment framing.
+  const thesis = `${match.supplierName}'s ${supply.material.toLowerCase()} — today ${(supply.currentFate ?? "underused").toLowerCase()} — can meet ${match.buyerName}'s need for ${(demand.specNeeded ?? "circular input").toLowerCase()}. Matched at ${formatTonnes(match.volumeTonnes)} a year, the loop is worth ${formatGBPCompact(match.value)} and avoids ${formatCarbon(match.carbonTonnes)}, at a readiness of ${match.strength}/100.`;
+
+  // Scenario sensitivity — how the economics move under four planning cases.
+  const scenarios = [
+    { label: "Conservative", vol: 0.7, price: 0.9 },
+    { label: "Baseline", vol: 1, price: 1 },
+    { label: "Target", vol: 1.1, price: 1.05 },
+    { label: "Accelerated", vol: 1.3, price: 1.12 },
+  ].map((s) => ({
+    label: s.label,
+    value: Math.round(match.value * s.vol * s.price),
+    carbon: Math.round(match.carbonTonnes * s.vol),
+  }));
+  const maxScenario = Math.max(...scenarios.map((s) => s.value));
+
   return (
     <div>
       <Link
@@ -91,6 +107,12 @@ export default async function OpportunityPage({ params }: { params: Promise<{ id
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         <div className="flex flex-col gap-6">
+          {/* Thesis */}
+          <div>
+            <SectionTitle>Opportunity thesis</SectionTitle>
+            <p className="font-serif text-lg leading-relaxed tracking-[-0.005em] text-foreground">{thesis}</p>
+          </div>
+
           {/* Participating organisations */}
           <div>
             <SectionTitle>Participating organisations</SectionTitle>
@@ -111,6 +133,34 @@ export default async function OpportunityPage({ params }: { params: Promise<{ id
                 <KeyValue label="Carbon benefit / yr" value={formatCarbon(match.carbonTonnes)} />
                 <KeyValue label="Material diverted" value={formatTonnes(match.diversionTonnes)} />
                 <KeyValue label="Haulage distance" value={formatKm(match.distanceKm)} />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Scenario sensitivity */}
+          <div>
+            <SectionTitle hint="Volume × price planning cases">Scenario sensitivity</SectionTitle>
+            <Card>
+              <CardContent className="flex flex-col gap-3 p-5">
+                {scenarios.map((s) => (
+                  <div key={s.label} className="flex items-center gap-3">
+                    <span className="w-24 shrink-0 text-xs text-muted-foreground">{s.label}</span>
+                    <div className="h-6 flex-1 overflow-hidden rounded bg-surface-2">
+                      <div
+                        className={`flex h-full items-center justify-end rounded px-2 ${s.label === "Baseline" ? "bg-evergreen-700" : "bg-evergreen-500"}`}
+                        style={{ width: `${Math.max(16, (s.value / maxScenario) * 100)}%` }}
+                      >
+                        <span className="text-2xs font-semibold text-white">{formatGBPCompact(s.value)}</span>
+                      </div>
+                    </div>
+                    <span className="w-20 shrink-0 text-right text-2xs tabular-nums text-muted-foreground">
+                      {formatCarbon(s.carbon)}
+                    </span>
+                  </div>
+                ))}
+                <p className="text-2xs text-muted-foreground">
+                  Illustrative: cases flex matched volume and realised price around the baseline match.
+                </p>
               </CardContent>
             </Card>
           </div>
