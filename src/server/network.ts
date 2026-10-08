@@ -18,6 +18,7 @@ import {
 import { MATERIAL_STREAMS } from "@/domain/network/data";
 import { FAMILY_FACTORS } from "@/domain/network/families";
 import { BUSINESSES } from "@/db/seed-data";
+import { computeScores } from "@/domain/scoring";
 import type { MaterialFamily, MaterialStream, OpportunityMatch, PipelineStage } from "@/domain/network/types";
 import type { MatchView, StreamView } from "@/lib/view-types";
 
@@ -151,4 +152,90 @@ export function getOrgNetwork(orgId: string): OrgNetwork {
     asBuyer: matches.filter((m) => m.buyerId === orgId).length,
     networkValue: matches.reduce((n, m) => n + m.value, 0),
   };
+}
+
+export interface SectorIntel {
+  sector: string;
+  orgCount: number;
+  orgIds: string[];
+  opportunityValue: number;
+  carbonTonnes: number;
+  matchCount: number;
+  readyToProgress: number;
+  avgViability: number;
+  avgOpportunity: number;
+  avgReadiness: number;
+  /** 0–100 composite board-level attractiveness. */
+  attractiveness: number;
+  topFamily: string;
+  families: string[];
+  barriers: string[];
+}
+
+const ADVANCED_STAGES = ["Pilot", "Commercial agreement", "Implementation", "Realised"];
+const SEED_ISO = "2026-09-01T09:00:00.000Z";
+
+/** Board-level intelligence per sector, combining scores and network value. */
+export function getSectorIntelligence(): SectorIntel[] {
+  const matches = getMatches();
+  const sectors = [...new Set(BUSINESSES.map((b) => b.sector))];
+
+  return sectors
+    .map((sector) => {
+      const orgs = BUSINESSES.filter((b) => b.sector === sector);
+      const orgIds = orgs.map((o) => o.id);
+      const bundles = orgs.map((o) => computeScores(o.inputs, SEED_ISO));
+      const avg = (ns: number[]) => (ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : 0);
+      const avgViability = avg(bundles.map((b) => b.viability.score));
+      const avgOpportunity = avg(bundles.map((b) => b.opportunity.score));
+
+      const sectorMatches = matches.filter(
+        (m) => orgIds.includes(m.supplierId) || orgIds.includes(m.buyerId),
+      );
+      const originated = matches.filter((m) => orgIds.includes(m.supplierId));
+      const opportunityValue = originated.reduce((n, m) => n + m.value, 0);
+      const carbonTonnes = originated.reduce((n, m) => n + m.carbonTonnes, 0);
+      const avgReadiness = avg(sectorMatches.map((m) => m.strength));
+
+      const famCount = new Map<string, number>();
+      for (const s of MATERIAL_STREAMS.filter((s) => orgIds.includes(s.orgId)))
+        famCount.set(s.family, (famCount.get(s.family) ?? 0) + 1);
+      const families = [...famCount.keys()];
+      const topFamily = [...famCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
+
+      const barrierCount = new Map<string, number>();
+      for (const b of bundles)
+        for (const d of b.viability.negativeDrivers) {
+          const k = d.replace(/\s*\(\d+\)$/, "").replace(/\s*\(inverted\)/, "");
+          barrierCount.set(k, (barrierCount.get(k) ?? 0) + 1);
+        }
+      const barriers = [...barrierCount.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([k]) => k);
+
+      // Composite attractiveness: viability, opportunity score, network readiness, value scale.
+      const valueScore = Math.min(100, (opportunityValue / 200_000) * 100);
+      const attractiveness = Math.round(
+        0.3 * avgViability + 0.25 * avgOpportunity + 0.25 * avgReadiness + 0.2 * valueScore,
+      );
+
+      return {
+        sector,
+        orgCount: orgs.length,
+        orgIds,
+        opportunityValue,
+        carbonTonnes,
+        matchCount: sectorMatches.length,
+        readyToProgress: sectorMatches.filter((m) => ADVANCED_STAGES.includes(m.stage)).length,
+        avgViability: Math.round(avgViability * 10) / 10,
+        avgOpportunity: Math.round(avgOpportunity * 10) / 10,
+        avgReadiness: Math.round(avgReadiness),
+        attractiveness,
+        topFamily,
+        families,
+        barriers,
+      } satisfies SectorIntel;
+    })
+    .sort((a, b) => b.attractiveness - a.attractiveness);
 }
