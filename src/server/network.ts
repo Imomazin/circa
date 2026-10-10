@@ -21,7 +21,7 @@ import { computeScores } from "@/domain/scoring";
 import { enterpriseOrgs, enterpriseStreams, orgById } from "@/domain/enterprise/generate";
 import type { EnterpriseOrg } from "@/domain/enterprise/types";
 import type { MaterialFamily, MaterialStream, OpportunityMatch, PipelineStage } from "@/domain/network/types";
-import type { MatchView, StreamView } from "@/lib/view-types";
+import type { MatchView, StreamView, OrgRosterRow } from "@/lib/view-types";
 
 /**
  * Server-side access to the circular network. The network is derived
@@ -254,19 +254,7 @@ export function getSectorIntelligence(): SectorIntel[] {
 
 // ── Organisation roster + Organisation 360 ──────────────────────────────────
 
-export interface OrgRosterRow {
-  id: string;
-  name: string;
-  sector: string;
-  region: string;
-  size: string;
-  featured: boolean;
-  verified: boolean;
-  opportunities: number;
-  networkValue: number;
-  supplyTonnes: number;
-  demandTonnes: number;
-}
+export type { OrgRosterRow };
 
 export function getOrgRoster(): OrgRosterRow[] {
   const streams = enterpriseStreams();

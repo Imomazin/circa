@@ -34,6 +34,21 @@ export interface DirectoryRow extends DashboardRow {
   networkValue: number;
 }
 
+/** A roster row across the full enterprise network. */
+export interface OrgRosterRow {
+  id: string;
+  name: string;
+  sector: string;
+  region: string;
+  size: string;
+  featured: boolean;
+  verified: boolean;
+  opportunities: number;
+  networkValue: number;
+  supplyTonnes: number;
+  demandTonnes: number;
+}
+
 /** An opportunity match enriched with organisation names for the client. */
 export interface MatchView extends OpportunityMatch {
   supplierName: string;

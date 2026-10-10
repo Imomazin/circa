@@ -4,26 +4,20 @@ import { Plus, Download } from "lucide-react";
 import { PageHeader } from "@/components/primitives";
 import { buttonVariants } from "@/components/ui/button";
 import { BusinessDirectory } from "@/components/businesses/directory";
-import { getAllBusinessSummaries, summaryToRow } from "@/server/queries";
-import { getOrgNetwork } from "@/server/network";
-import type { DirectoryRow } from "@/lib/view-types";
+import { getOrgRoster } from "@/server/network";
 
 export const metadata: Metadata = { title: "Organisations" };
-export const dynamic = "force-dynamic";
 
-export default async function BusinessesPage() {
-  const summaries = await getAllBusinessSummaries();
-  const rows: DirectoryRow[] = summaries.map((s) => {
-    const net = getOrgNetwork(s.org.id);
-    return { ...summaryToRow(s), opportunities: net.matches.length, networkValue: net.networkValue };
-  });
+export default function BusinessesPage() {
+  const rows = getOrgRoster();
+  const assessed = rows.filter((r) => r.featured).length;
 
   return (
     <div>
       <PageHeader
         eyebrow="Workspace"
         title="Organisations"
-        description="Scottish businesses exploring circular opportunities across ten sectors. Search, filter and sort by commercial standing, then open a profile for the full assessment and network position."
+        description={`${rows.length} organisations in the Scottish circular network across 14 sectors — ${assessed} fully assessed, the rest verified and mapped by material position. Search, filter and open a profile for the Organisation 360.`}
         actions={
           <>
             <a
