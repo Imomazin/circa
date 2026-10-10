@@ -5,6 +5,7 @@ import { PageHeader, StatTile, SectionTitle } from "@/components/primitives";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FamilyDot, GradeChip } from "@/components/network/elements";
+import { MaterialFlow } from "@/components/intelligence/material-flow";
 import { getMaterials } from "@/server/network";
 import { formatGBPCompact, formatTonnes, formatCarbon, formatNumber } from "@/lib/format";
 import type { MaterialFamilyView } from "@/server/network";
@@ -36,6 +37,25 @@ export default function MaterialsPage() {
           accent="copper"
           sublabel={`${Math.round((totalMatched / totalSupply) * 100)}% of supply`}
         />
+      </div>
+
+      <div className="mb-8">
+        <SectionTitle>Material flow</SectionTitle>
+        <div className="rounded-lg border border-border bg-card p-5 shadow-card">
+          <MaterialFlow
+            rows={families.map((f) => ({
+              family: f.family,
+              color: f.color,
+              matchedTonnes: f.matchedTonnes,
+              supplyTonnes: f.supplyTonnes,
+              demandTonnes: f.demandTonnes,
+            }))}
+          />
+          <p className="mt-2 text-2xs text-muted-foreground">
+            Ribbon thickness is proportional to matched volume moving from recovered supply into
+            circular demand, per material family.
+          </p>
+        </div>
       </div>
 
       <SectionTitle hint={`${families.length} families`}>Material families</SectionTitle>

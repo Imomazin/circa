@@ -47,6 +47,20 @@ export interface MaterialStream {
   minGrade?: QualityGrade;
   /** Demand only: the specification the buyer needs. */
   specNeeded?: string;
+  /** Specific material class id (enterprise dataset). */
+  classId?: string;
+  /** Originating connector / data source id. */
+  sourceConnector?: string;
+}
+
+/** A single economic figure with the connector/dataset it was derived from. */
+export interface EconomicLine {
+  label: string;
+  value: number;
+  /** Connector or dataset id that produced / informed the figure. */
+  source: string;
+  /** Short assumption note. */
+  assumption?: string;
 }
 
 /** The nine-stage circular-opportunity pipeline. */
@@ -95,4 +109,26 @@ export interface OpportunityMatch {
   recommendedAction: string;
   /** Deterministic owner initials for the workspace view. */
   owner: string;
+
+  // ── Full economic model (enterprise engine) ──────────────────────────────
+  /** Gross recovered material value, £/yr. */
+  grossMaterialValue: number;
+  /** Logistics cost of moving the material, £/yr (distance-driven). */
+  transportCost: number;
+  /** Reprocessing / reconditioning cost, £/yr. */
+  processingCost: number;
+  /** One-off implementation estimate, £. */
+  implementationCost: number;
+  /** Net annual commercial value after costs, £/yr. */
+  netValue: number;
+  /** Indicative margin band, %. */
+  marginLowPct: number;
+  marginHighPct: number;
+  /** Supply / demand confidence, 0–100, from source data quality. */
+  supplyConfidence: number;
+  demandConfidence: number;
+  /** Transport emissions created by the move, tCO2e/yr (already netted in carbonTonnes). */
+  transportCarbon: number;
+  /** Per-figure provenance for the dossier. */
+  economics: EconomicLine[];
 }

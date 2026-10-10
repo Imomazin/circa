@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader, StatTile } from "@/components/primitives";
-import { DiscoveryBoard } from "@/components/network/discovery-board";
+import { OpportunityExplorer } from "@/components/network/opportunity-explorer";
 import { getOpportunities, getNetworkOverview } from "@/server/network";
 import { formatGBPCompact, formatCarbon, formatTonnes } from "@/lib/format";
 
@@ -25,7 +25,7 @@ export default function OpportunitiesPage() {
         <StatTile label="Carbon benefit" value={formatCarbon(totals.carbonTonnes)} accent="copper" sublabel="Indicative, per year" />
       </div>
 
-      <DiscoveryBoard matches={matches} />
+      <OpportunityExplorer matches={matches} />
     </div>
   );
 }
