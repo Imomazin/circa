@@ -69,7 +69,7 @@ export default function SectorsPage() {
                       <span key={f} className="inline-flex items-center gap-1 text-2xs text-muted-foreground">
                         <span
                           className="h-2 w-2 rounded-[2px]"
-                          style={{ backgroundColor: FAMILY_FACTORS[f as MaterialFamily]?.color ?? "#185847" }}
+                          style={{ backgroundColor: FAMILY_FACTORS[f as MaterialFamily]?.color ?? "#165844" }}
                         />
                         {f}
                       </span>

@@ -21,7 +21,7 @@ export const FAMILY_FACTORS: Record<MaterialFamily, FamilyFactors> = {
   "Timber & board": {
     carbonPerTonne: 0.9,
     disposalPerTonne: 110,
-    color: "#185847",
+    color: "#165844",
     note: "Reclaimed timber and board displacing virgin fibre.",
   },
   "Textiles & fibre": {
@@ -33,37 +33,37 @@ export const FAMILY_FACTORS: Record<MaterialFamily, FamilyFactors> = {
   "Metals & alloys": {
     carbonPerTonne: 3.2,
     disposalPerTonne: 95,
-    color: "#4a545d",
+    color: "#47544c",
     note: "Alloy and steel recovered for remanufacture rather than melt.",
   },
   "Polymers & plastics": {
     carbonPerTonne: 2.1,
     disposalPerTonne: 165,
-    color: "#b87333",
+    color: "#b26a2e",
     note: "Closed-loop polymer recovery displacing virgin resin.",
   },
   "Electronics & components": {
     carbonPerTonne: 21,
     disposalPerTonne: 240,
-    color: "#7a4a1f",
+    color: "#7d4a1c",
     note: "Harvested modules and components re-entering repair and refurbishment.",
   },
   "Food & organic": {
     carbonPerTonne: 0.8,
     disposalPerTonne: 85,
-    color: "#6fb3a0",
+    color: "#6cb29e",
     note: "Processing by-products converted to higher-value use.",
   },
   "Glass & packaging": {
     carbonPerTonne: 0.6,
     disposalPerTonne: 70,
-    color: "#99a2aa",
+    color: "#99a39b",
     note: "Recovered packaging re-entering local supply loops.",
   },
   "Equipment & assets": {
     carbonPerTonne: 3.5,
     disposalPerTonne: 130,
-    color: "#cc8c54",
+    color: "#cc8b4e",
     note: "Whole assets kept in service through reuse, repair and remanufacture.",
   },
 };

@@ -108,8 +108,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Masthead — dark graphite, editorial */}
-      <header className="sticky top-0 z-40 bg-graphite-900 text-graphite-100">
+      {/* Masthead — deep forest-graphite, editorial, with a copper hairline */}
+      <header className="sticky top-0 z-40 border-b border-copper-500/30 bg-graphite-900 text-graphite-100 shadow-[0_1px_0_0_rgba(178,106,46,0.12)]">
         <div className="mx-auto flex h-14 max-w-content items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
           <Wordmark onDark />
           <div className="hidden items-center gap-3 lg:flex">

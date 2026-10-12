@@ -46,7 +46,7 @@ export function StageTag({ stage, className }: { stage: PipelineStage; className
 }
 
 export function StrengthBar({ value, className }: { value: number; className?: string }) {
-  const color = value >= 68 ? "#185847" : value >= 55 ? "#3b8f76" : value >= 45 ? "#b87333" : "#b4472f";
+  const color = value >= 68 ? "#165844" : value >= 55 ? "#3b8f76" : value >= 45 ? "#b26a2e" : "#b4472f";
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <div className="h-1.5 w-full max-w-[120px] overflow-hidden rounded-full bg-surface-2">

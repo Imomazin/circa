@@ -266,7 +266,7 @@ export default function OverviewPage() {
 
           <div>
             <SectionTitle>Regional concentration</SectionTitle>
-            <HorizontalBars data={regionActivity} color="#b87333" height={200} format="gbpCompact" />
+            <HorizontalBars data={regionActivity} color="#b26a2e" height={200} format="gbpCompact" />
           </div>
         </div>
       </section>
@@ -308,10 +308,10 @@ function BigFigure({
 
 function QuadrantGuide() {
   const items = [
-    { label: "Act now", note: "High value · high readiness", color: "#185847" },
-    { label: "Quick wins", note: "Ready · smaller value", color: "#b87333" },
-    { label: "Build the case", note: "High value · early readiness", color: "#4a545d" },
-    { label: "Monitor", note: "Lower priority for now", color: "#99a2aa" },
+    { label: "Act now", note: "High value · high readiness", color: "#165844" },
+    { label: "Quick wins", note: "Ready · smaller value", color: "#b26a2e" },
+    { label: "Build the case", note: "High value · early readiness", color: "#47544c" },
+    { label: "Monitor", note: "Lower priority for now", color: "#99a39b" },
   ];
   return (
     <div className="rounded-lg border border-border bg-surface/50 p-4">

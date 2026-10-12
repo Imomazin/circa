@@ -3,23 +3,25 @@
 @tailwind utilities;
 
 /*
- * Circa design tokens.
- * Light: warm stone / sand surfaces, graphite ink, forest + copper reserved
- * for brand, value and status. Dark: graphite field with the same accents.
+ * Circa design tokens — "Evergreen & Copper".
+ * Light: warm ivory ground, near-white cards, deep forest-graphite ink, a
+ * burnished copper accent. Dark: a deep forest-graphite field with the same
+ * forest + copper, tuned for contrast. Mostly light, graphite used with intent.
  */
 :root {
-  --background: #f4f2ec;
-  --foreground: #161b20;
-  --card: #fbfaf7;
-  --card-foreground: #161b20;
-  --surface: #eceae2;
-  --surface-2: #e4e1d6;
-  --muted: #e9e5db;
-  --muted-foreground: #6d665d;
-  --border: #ded7ca;
-  --border-strong: #cabfae;
-  --input: #d6cfc1;
-  --ring: #22705b;
+  --background: #f5f3ec;
+  --foreground: #15191a;
+  --card: #fffdfa;
+  --card-foreground: #15191a;
+  --surface: #edeae1;
+  --surface-2: #e4dfd2;
+  --muted: #e9e5da;
+  --muted-foreground: #5c655e;
+  --border: #e2dccd;
+  --border-strong: #cabda4;
+  --input: #d8d1c2;
+  --ring: #1f6b57;
+  --accent: #b26a2e;
 
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
@@ -30,34 +32,36 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #0e1316;
-    --foreground: #e8e9e6;
-    --card: #161d22;
-    --card-foreground: #e8e9e6;
-    --surface: #121a1f;
-    --surface-2: #1a232a;
-    --muted: #1b242b;
-    --muted-foreground: #9aa3ab;
-    --border: #28323a;
-    --border-strong: #3a454e;
-    --input: #2b353d;
-    --ring: #3b8f76;
+    --background: #0b100e;
+    --foreground: #eaece7;
+    --card: #121917;
+    --card-foreground: #eaece7;
+    --surface: #0f1613;
+    --surface-2: #18211d;
+    --muted: #19211d;
+    --muted-foreground: #9aa49c;
+    --border: #243029;
+    --border-strong: #3a473f;
+    --input: #2a352f;
+    --ring: #46a085;
+    --accent: #d08a4a;
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #0e1316;
-  --foreground: #e8e9e6;
-  --card: #161d22;
-  --card-foreground: #e8e9e6;
-  --surface: #121a1f;
-  --surface-2: #1a232a;
-  --muted: #1b242b;
-  --muted-foreground: #9aa3ab;
-  --border: #28323a;
-  --border-strong: #3a454e;
-  --input: #2b353d;
-  --ring: #3b8f76;
+  --background: #0b100e;
+  --foreground: #eaece7;
+  --card: #121917;
+  --card-foreground: #eaece7;
+  --surface: #0f1613;
+  --surface-2: #18211d;
+  --muted: #19211d;
+  --muted-foreground: #9aa49c;
+  --border: #243029;
+  --border-strong: #3a473f;
+  --input: #2a352f;
+  --ring: #46a085;
+  --accent: #d08a4a;
 }
 
 * {

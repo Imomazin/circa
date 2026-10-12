@@ -33,26 +33,26 @@ import {
  * visuals, not decoration.
  */
 export const PALETTE = {
-  evergreen: "#185847",
+  evergreen: "#165844",
   evergreenLight: "#3b8f76",
-  amber: "#b87333",
-  copper: "#b87333",
-  charcoal: "#4a545d",
+  amber: "#b26a2e",
+  copper: "#b26a2e",
+  charcoal: "#47544c",
   grey: "#a99f8d",
   red: "#b4472f",
 };
 
 export const CATEGORICAL = [
-  "#185847", // forest
+  "#165844", // forest
   "#3b8f76", // sea green
-  "#b87333", // copper
-  "#4a545d", // graphite
-  "#6fb3a0", // pale green
-  "#cc8c54", // light copper
+  "#b26a2e", // copper
+  "#47544c", // graphite
+  "#6cb29e", // pale green
+  "#cc8b4e", // light copper
   "#8b8379", // stone
-  "#0d3329", // deep forest
-  "#7a4a1f", // dark copper
-  "#99a2aa", // mineral grey
+  "#0b3127", // deep forest
+  "#7d4a1c", // dark copper
+  "#99a39b", // mineral grey
 ];
 
 const axisStyle = { fontSize: 11, fill: "currentColor" } as const;

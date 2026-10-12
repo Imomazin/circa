@@ -16,8 +16,8 @@ function cell(value: number): React.CSSProperties {
   const t = Math.max(0, Math.min(1, value / 100));
   // forest green with intensity by value
   return {
-    backgroundColor: `color-mix(in srgb, #185847 ${Math.round(12 + t * 68)}%, transparent)`,
-    color: t > 0.62 ? "#f4f2ec" : "var(--foreground)",
+    backgroundColor: `color-mix(in srgb, #165844 ${Math.round(12 + t * 68)}%, transparent)`,
+    color: t > 0.62 ? "#f5f3ec" : "var(--foreground)",
   };
 }
 
