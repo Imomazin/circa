@@ -29,7 +29,7 @@ export function Logo({ className, size = 28 }: { className?: string; size?: numb
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="16" cy="16" r="4.1" fill="#b87333" />
+      <circle cx="16" cy="16" r="4.1" fill="#b26a2e" />
     </svg>
   );
 }

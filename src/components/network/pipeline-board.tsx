@@ -86,7 +86,7 @@ export function PipelineBoard({ matches }: { matches: MatchView[] }) {
                         className="h-1.5 w-1.5 rounded-full"
                         style={{
                           backgroundColor:
-                            m.strength >= 68 ? "#185847" : m.strength >= 55 ? "#3b8f76" : "#b87333",
+                            m.strength >= 68 ? "#165844" : m.strength >= 55 ? "#3b8f76" : "#b26a2e",
                         }}
                       />
                       {m.strength}

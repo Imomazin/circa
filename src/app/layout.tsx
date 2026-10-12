@@ -19,6 +19,12 @@ const spaceGrotesk = localFont({
   src: [{ path: "./fonts/SpaceGrotesk-Variable.woff2", weight: "400 700", style: "normal" }],
 });
 
+const fraunces = localFont({
+  variable: "--font-fraunces",
+  display: "swap",
+  src: [{ path: "./fonts/Fraunces-Variable.woff2", weight: "400 700", style: "normal" }],
+});
+
 const plexMono = localFont({
   variable: "--font-plex-mono",
   display: "swap",
@@ -49,7 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en-GB"
-      className={`${plexSans.variable} ${spaceGrotesk.variable} ${plexMono.variable}`}
+      className={`${plexSans.variable} ${spaceGrotesk.variable} ${fraunces.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <body>

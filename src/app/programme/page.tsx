@@ -92,7 +92,7 @@ export default async function ProgrammePage() {
             <CardTitle>Capital requirement by sector</CardTitle>
             <CardDescription>Average capital requirement, £</CardDescription>
           </CardHeader>
-          <CardContent><HorizontalBars data={capexBySector} color="#b87333" /></CardContent>
+          <CardContent><HorizontalBars data={capexBySector} color="#b26a2e" /></CardContent>
         </Card>
         <Card>
           <CardHeader>

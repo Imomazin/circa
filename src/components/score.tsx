@@ -40,9 +40,9 @@ export function ConfidenceBadge({ level }: { level: ConfidenceLevel }) {
 /** Colour for a score value, used by meters and rings. Mineral ramp:
  *  forest → sea-green → copper → brick, never a traffic-light green/red. */
 export function scoreColor(score: number): string {
-  if (score >= 65) return "#185847"; // evergreen 600
+  if (score >= 65) return "#165844"; // evergreen 600
   if (score >= 50) return "#3b8f76"; // evergreen 400
-  if (score >= 35) return "#b87333"; // copper 400
+  if (score >= 35) return "#b26a2e"; // copper 400
   return "#b4472f"; // brick
 }
 
